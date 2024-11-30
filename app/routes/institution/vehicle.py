@@ -142,7 +142,7 @@ def update_vehicle(vehicle_id):
             }), 400
 
          # Get vehicle 
-        vehicle = Vehicle.query.filter_by(id=vehicle_id).first()
+        vehicle = Vehicle.query.filter(vehicle_id).first()
 
         # Perbarui data kendaraan dengan fallback ke nilai yang ada
         vehicle.name = data.get('name', vehicle.name)

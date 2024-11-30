@@ -14,7 +14,7 @@ role_route = Blueprint('roles', __name__)
 # Ambil Data
 @role_route.route('/', methods=['GET'])
 @auth.login_required
-def get_roles():
+def get_vehicles():
     # Dapatkan parameter kueri penelusuran
     search_name = request.args.get('name', None)
 
@@ -104,67 +104,9 @@ def add_roles():
         ), 500
 # Akhir Tambah Role
 
-# Ubah Role 
-@role_route.route('/<int:role_id>', methods=['PUT'])
-@auth.login_required
-def update_role(role_id):
-    try:
-        # Buat skema dengan data kendaraan saat ini
-        schema = UpdateRoleSchema(db_session=db.session, role_id=role_id)
-
-        # Validasi permintaan data
-        try:
-            data = schema.load(request.json)
-        except ValidationError as err:
-            return jsonify({
-                'status': False,
-                'message': 'Validasi data gagal',
-                'errors': err.messages
-            }), 400
-
-         # Get role 
-        role = Role.query.filter_by(id=role_id).first()
-
-        # Perbarui data kendaraan dengan fallback ke nilai yang ada
-        role.name = data.get('name', role.name)
-
-        # Lakukan perubahan
-        db.session.commit()
-
-        return jsonify({
-            'status': True,
-            'message': 'Role berhasil diperbarui',
-            'data': {
-                'role': {
-                    'id': role.id,
-                    'name': role.name,
-                    'created_at': role.created_at
-                }
-            }
-        }), 200
-
-    except Exception as e:
-        # Rollback untuk semua jenis kesalahan
-        db.session.rollback()
-        
-        # Tangani ValidationError secara spesifik
-        if isinstance(e, ValidationError):
-            return jsonify({
-                'status': False,
-                'message': 'Kesalahan validasi',
-                'errors': e.messages
-            }), 400
-        
-        # Tangani kesalahan umum
-        return jsonify(
-            status=False,
-            message= f'Terjadi kesalahan: {str(e)}'
-        ), 500
-# Akhir Ubah Role 
-
 @role_route.route('/<int:role_id>', methods=['DELETE'])
 @auth.login_required
-def delete_role(role_id):
+def delete_driver(role_id):
     try:
         # Kueri role berdasarkan ID
         role = Role.query.filter_by(id=role_id).first()
